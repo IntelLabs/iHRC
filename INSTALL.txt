@@ -1,0 +1,60 @@
+
+Intel Heterogeneous Research Compiler (iHRC) is a general purpose high-level programming model for Intel's integrated processors such as Ivy Bridge and Haswell. iHRC allows existing data-parallel C++ programs, with minimal changes and programming effort, to transparently execute on both CPU and Processor Graphics cores.  
+
+
+-----------------
+H/W Requirements:
+-----------------
+
+Intel 3rd and 4th generation Core processors (Ivy Bridge and Haswell)
+
+-----------------
+S/W Requirements:
+-----------------
+
+- Windows 7 64bit
+- CMake 2.8 or higher -- available at "http://www.cmake.org/cmake/resources/software.html"
+- Python 3.3 (required for building LLVM 3.3 test) -- available at "http://www.python.org/download/"
+- Mingw 64bit -- available at "http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/sezero_4.4_20111031/mingw-w64-bin_x86_64-mingw_20111031_sezero.zip/download"  
+	-- Install this at "C:\mingw64"
+	-- Fix known CLANG 3.3 issue described in "mingw64-fix.txt"
+- OpenCL SDK 3.0 or higher -- available at "http://software.intel.com/en-us/vcsource/tools/opencl-sdk" 
+	-- This is by default installed at "C:\Program Files (x86)\Intel\OpenCL SDK\3.0"
+- OpenCL Graphics driver update -- in the website We recommend that you reguarly update OpenCL Graphics driver as described in the website "http://software.intel.com/en-us/vcsource/tools/opencl-sdk": Please find the text "Upgrade to the latest Intel HD Graphics Driver with OpenCl runtime" and check if your system needs driver upgrade and follow the instructions from there.
+
+------------------
+Build instructions
+------------------
+(1) Please install required S/W mentioned above in the desired directories.
+(2) Please make sure mingw is installed at "C:\mingw64" and "C:\mingw64\bin" is added to the PATH variable.
+(3) Building iHRC compiler: 
+	(a) Open CMake GUI: point source directory to "iHRC/compiler/src/llvm-3.3" and build directory to "iHRC/compiler/build/mingw".
+		(I)   Click "Configure"
+		(II)  Choose "Mingw Makefiles" as the generator for the project with the option "Use default native compilers"; click "Finish".
+		(III) Edit "LLVM_TARGETS_TO_BUILD" to have "X86;OpenCLBackend".
+		(IV)  Click "Configure" again.
+		(V)   Click "Generate".
+	(b) Go to "iHRC/compiler/build/mingw" directory in a command window and build iHRC-compiler using "mingw32-make.exe".
+	(c) Should produce "opt.exe", "clang++.exe", "llc.exe", and "llvm-dis.exe" in "iHRC/compiler/build/mingw/bin" directory.
+
+(4) Building TBB:
+	(a) Go to "iHRC/tbb41_20130613oss", execute "mingw32-make.exe compiler=gcc os=windows arch=intel64 runtime=mingw"
+	(b) Should produce "tbb.dll" and "tbbmalloc.dll" in "iHRC/tbb41_20130613oss/build/windows_intel64_gcc_mingw_release" directory.
+
+(5) Building iHRC runtime:
+	(a) Go to "iHRC/runtime/build/mingw" and execute "mingw32-make.exe"
+	(b) Should produce "iHRC.dll" in the same directory.
+
+---------------------------
+Build and Execute workloads
+---------------------------
+
+If you have not built the compiler, tbb, and runtime, please use the instructions above to build them.
+Also make sure you have fixed the CLANG 3.3 mingw issues as described in "mingw64-fix.txt".
+
+(1) Goto "iHRC/workloads" directory and on a command window execute "setup-mingw.bat" to set the path for execution. Please make sure mingw is installed at "C:\mingw64\", otherwise, you need to edit the setup file. Similarly, it assumes that Intel OpenCL SDK is installed at "C:\Program Files (x86)\Intel\OpenCL SDK\3.0".
+
+(2) Goto the workloads directory, for example, "iHRC/workloads/linked-list":
+	(a) execute "build.bat" -- This step uses compiler and runtime to build a single executable as "linkedlist.exe".
+	(b) execute "run.bat" 
+

@@ -1,0 +1,47 @@
+-------------------------
+Known Issues with mingw64
+-------------------------
+There are known issues of CLANG 3.3 working correctly with mingw64, which may be seen while executing our workloads. The following two fixes resolve the issues. Both require modifications to the file "C:\mingw64/x86_64-w64-mingw32/include/_mingw.h" (This assumes that mingw-64 is installed in the directory "C:\mingw64"):
+	(a) Fix for __int128 data type in file "C:\mingw64/x86_64-w64-mingw32/include/_mingw.h" 
+	    Find the following block of code starting from line number 209
+
+		#ifdef _WIN64
+		#ifndef __SIZEOF_INT128__
+		typedef int __int128 __attribute__ ((__mode__ (TI)));
+		#endif
+		#endif
+	
+	    Replace with the following block of code:
+
+		#ifdef _WIN64
+		#if (__clang_major__ > 3 || (__clang_major__ == 3 && __clang_minor__ >= 1)) && \
+    !defined(__SIZEOF_INT128__) 
+		#define __SIZEOF_INT128__ 16
+		#endif
+		#ifndef __SIZEOF_INT128__
+		typedef int __int128 __attribute__ ((__mode__ (TI)));
+		#endif
+		#endif
+	(b) Fix for "__debugbreak" in file "C:\mingw64/x86_64-w64-mingw32/include/_mingw.h":
+	    Find the following block of code starting from line number 665.
+
+	   	#ifdef __MINGW_INTRIN_INLINE
+		void __cdecl __debugbreak(void);
+		__MINGW_INTRIN_INLINE void __cdecl __debugbreak(void)
+		{
+		  __asm__ __volatile__("int $3");
+		}
+		#endif
+
+	    Replace with the following block of code:
+
+
+	   	#ifdef __MINGW_INTRIN_INLINE
+		#if !defined (__clang__)
+		void __cdecl __debugbreak(void);
+		__MINGW_INTRIN_INLINE void __cdecl __debugbreak(void)
+		{
+		  __asm__ __volatile__("int $3");
+		}
+		#endif
+		#endif

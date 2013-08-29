@@ -1,0 +1,23 @@
+; # ===-- Makefile for building OpenCL backend  --------------------------===//
+; # 
+; # Copyright (c) 2013 Intel Corporation. All rights reserved.
+; #                     The iHRC Compiler Infrastructure
+; #
+; # This file is distributed under the University of Illinois Open Source
+; # License. See LICENSE-iHRC.TXT for details.
+; #
+; #===----------------------------------------------------------------------===
+[common]
+subdirectories = TargetInfo
+
+[component_0]
+type = TargetGroup
+name = OpenCLBackend
+parent = Target
+
+[component_1]
+type = Library
+name = OpenCLBackendCodeGen
+parent = OpenCLBackend
+required_libraries = Core OpenCLBackendInfo Support Target
+add_to_library_groups = OpenCLBackend
