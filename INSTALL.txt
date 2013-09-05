@@ -14,7 +14,7 @@ S/W Requirements:
 
 - Windows 7 64bit
 - CMake 2.8 or higher -- available at "http://www.cmake.org/cmake/resources/software.html"
-- Python 3.3 (required for building LLVM 3.3 test) -- available at "http://www.python.org/download/"
+- Python 2.7 (required for building LLVM 3.3 test) -- available at "http://www.python.org/download/"
 - Mingw 64bit -- available at "http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/sezero_4.4_20111031/mingw-w64-bin_x86_64-mingw_20111031_sezero.zip/download"  
 	-- Install this at "C:\mingw64"
 	-- Fix known CLANG 3.3 issue described in "mingw64-fix.txt"
